@@ -1,4 +1,4 @@
-# Update Scanner
+# Update Scanner for Chrome
 
 Chrome port of sneakypete81's Firefox addon to monitors web pages for updates.
 
