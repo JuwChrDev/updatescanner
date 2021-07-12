@@ -16,17 +16,6 @@ html body {
   background-image: url('/images/updatescanner_32.png');
 }
 
-.panel-section-queue-state {
-  padding: 4px;
-  width: 100%;
-  background: #ffe900;
-}
-
-.panel-section-queue-state .text-section-header {
-  text-align: center;
-  width: 100%;
-}
-
 .panel-section-list {
   flex: auto;
   padding: 0;
@@ -79,9 +68,9 @@ p {
 .footer-button-icon {
   background-color: rgba(12, 12, 13, 0.8);
   height: 32px;
-  mask-size: 32px;
-  mask-position: center center;
-  mask-repeat: no-repeat;
+  -webkit-mask-size: 32px;
+  -webkit-mask-position: center center;
+  -webkit-mask-repeat: no-repeat;
 }
 
 #show-all-button {
@@ -89,15 +78,15 @@ p {
 }
 
 #new-button > .footer-button-icon {
-  mask-image: url('/images/new-16.svg');
+  -webkit-mask-image: url('/images/new-16.svg');
 }
 
 #sidebar-button > .footer-button-icon {
-  mask-image: url('/images/sidebar-16.svg');
+  -webkit-mask-image: url('/images/sidebar-16.svg');
 }
 
 #menu-button > .footer-button-icon {
-  mask-image: url('/images/more-16.svg');
+  -webkit-mask-image: url('/images/more-16.svg');
 }
 
 .footer-button-text {

@@ -4,7 +4,7 @@ import {PageStore} from '/lib/page/page_store.js';
  * the PageStore. Used to upgrade from UpdateScanner v3.
  *
  * @param {PageStore} pageStore - PageStore to import into.
- * @param {object} json - JSON object to import from.
+ * @param {Object} json - JSON object to import from.
  */
 export async function restoreBookmarksFromJson(pageStore, json) {
   const root = findRoot(json.children);
@@ -17,13 +17,13 @@ export async function restoreBookmarksFromJson(pageStore, json) {
 /**
  * Find the Update Scanner root bookmark folder.
  *
- * @param {object} bookmarks - Bookmark object to search.
- * @returns {object} Root Bookmark folder.
+ * @param {Object} bookmarks - Bookmark object to search.
+ * @returns {Object} Root Bookmark folder.
  */
 function findRoot(bookmarks) {
   for (let bookmarkIdx=0; bookmarkIdx < bookmarks.length; bookmarkIdx++) {
     const bookmark = bookmarks[bookmarkIdx];
-    if (Object.prototype.hasOwnProperty.call(bookmark, 'annos')) {
+    if (bookmark.hasOwnProperty('annos')) {
       for (let annoIdx=0; annoIdx < bookmark.annos.length; annoIdx++) {
         const anno = bookmark.annos[annoIdx];
         if (anno.name == 'updatescan/root') {
@@ -32,7 +32,7 @@ function findRoot(bookmarks) {
       }
     }
 
-    if (Object.prototype.hasOwnProperty.call(bookmark, 'children')) {
+    if (bookmark.hasOwnProperty('children')) {
       const result = findRoot(bookmark.children);
       if (result !== undefined) {
         return result;
@@ -46,12 +46,12 @@ function findRoot(bookmarks) {
  * Import Update Scanner pages from a bookmarks object.
  *
  * @param {PageStore} pageStore - PageStore to import bookmarks into..
- * @param {object} root - Update Scanner root bookmarks object.
+ * @param {Object} root - Update Scanner root bookmarks object.
  * @param {string} parentId - ID of the parent PageFolder object.
  */
 async function importPages(pageStore, root, parentId) {
   for (const child of root.children) {
-    if (Object.prototype.hasOwnProperty.call(child, 'children')) {
+    if (child.hasOwnProperty('children')) {
       const pageFolder = await pageStore.createPageFolder(parentId, -1);
       pageFolder.title = child.title;
       await pageFolder.save();
@@ -78,12 +78,12 @@ async function importPages(pageStore, root, parentId) {
 /**
  * Extract a bookmark's annotations into an object.
  *
- * @param {object} bookmark - Bookmark object to process.
- * @returns {object} Object containing the bookmark's annotations.
+ * @param {Object} bookmark - Bookmark object to process.
+ * @returns {Object} Object containing the bookmark's annotations.
  */
 function extractAnnos(bookmark) {
   const annos = {};
-  if (Object.prototype.hasOwnProperty.call(bookmark, 'annos')) {
+  if (bookmark.hasOwnProperty('annos')) {
     bookmark.annos.forEach((anno) => {
       annos[anno.name] = anno.value;
     });

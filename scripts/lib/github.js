@@ -11,37 +11,37 @@ const OWNER = 'sneakypete81';
 const REPO = 'updatescanner';
 const BETA_ISSUE = 36;
 
-exports.release = async function(version, changeText, isPrerelease) {
+exports.release = async function(version, changeText, isBeta) {
   console.log(`Creating Github release ${version}...`);
+
+  const xpiPath = `dist/update_scanner-${version}-an.fx.xpi`;
+  if (!fs.existsSync(xpiPath)) {
+    throw Error(`${xpiPath} does not exist.`);
+  }
 
   const releaseParams = {
     owner: OWNER,
     repo: REPO,
     tag_name: version,
     body: changeText,
-    prerelease: isPrerelease,
+    prerelease: isBeta,
   };
   const {
     data: {upload_url: uploadUrl},
   } = await octokit.repos.createRelease(releaseParams);
 
-  if (isPrerelease) {
-    const xpiPath = `dist/update_scanner-${version}-an.fx.xpi`;
+  if (version.includes('beta')) {
     uploadXpi(xpiPath, uploadUrl);
   }
 };
 
 const uploadXpi = async function(xpiPath, uploadUrl) {
-  if (!fs.existsSync(xpiPath)) {
-    throw Error(`${xpiPath} does not exist.`);
-  }
-
   const filename = path.basename(xpiPath);
   console.log(`Uploading ${filename}...`);
 
   const uploadParams = {
     url: uploadUrl,
-    data: fs.readFileSync(xpiPath),
+    file: fs.readFileSync(xpiPath),
     name: filename,
     headers: {
       'content-type': 'application/x-xpinstall',
@@ -57,7 +57,7 @@ exports.updateBetaIssue = async function(version, changeText) {
   const commentParams = {
     owner: OWNER,
     repo: REPO,
-    issue_number: BETA_ISSUE,
+    number: BETA_ISSUE,
     body: (
       `${version} is now available to install from ${downloadUrl}\n\n` +
       changeText

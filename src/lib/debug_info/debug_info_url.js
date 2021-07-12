@@ -1,6 +1,5 @@
 /**
  * Parameter names for the Debug Info page URL parameters.
- *
  * @readonly
  * @enum {string}
  */

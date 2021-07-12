@@ -1,6 +1,6 @@
-import {backgroundActionEnum, uiActionsEnum} from './actions.js';
+import {backgroundActionEnum} from './actions.js';
 import {Autoscan} from '/lib/scan/autoscan.js';
-import {ScanQueue, scanQueueStateEnum} from '/lib/scan/scan_queue.js';
+import {ScanQueue} from '/lib/scan/scan_queue.js';
 import {showNotification} from '/lib/scan/notification.js';
 import {PageStore, hasPageStateChanged, isItemChanged}
   from '/lib/page/page_store.js';
@@ -9,18 +9,10 @@ import {openUpdate} from '/lib/update/update_url.js';
 import {log} from '/lib/util/log.js';
 import {Config} from '/lib/util/config.js';
 
-const defaultIcon = {
+const activeIcon = {
   18: '/images/updatescanner_18.png',
   48: '/images/updatescanner_48.png',
   64: '/images/updatescanner_64.png',
-  96: '/images/updatescanner_96.png',
-};
-
-const scanIcon = {
-  18: '/images/updatescanner_18_scan.png',
-  48: '/images/updatescanner_48_scan.png',
-  64: '/images/updatescanner_64_scan.png',
-  96: '/images/updatescanner_96_scan.png',
 };
 
 /**
@@ -46,11 +38,8 @@ export class Background {
 
     this.scanQueue = new ScanQueue();
     this.scanQueue.bindScanComplete(this._handleScanComplete.bind(this));
-    this.scanQueue.bindQueueStateChange(
-      this._handleScanQueueStateChange.bind(this),
-    );
 
-    this._refreshToolbar();
+    this._refreshIcon();
     this.pageStore.refreshFolderState();
     await this._checkFirstRun();
     await this._checkIfUpdateRequired();
@@ -68,7 +57,7 @@ export class Background {
    */
   _handlePageUpdate(pageId, change) {
     if (hasPageStateChanged(change)) {
-      this._refreshToolbar();
+      this._refreshIcon();
       this.pageStore.refreshFolderState();
     }
   }
@@ -76,57 +65,29 @@ export class Background {
   /**
    * Called when a message is sent to the background process.
    *
-   * @param {object} message - Message content.
-   * @param {object} sender - Object giving details about the message sender.
-   * @param {Function} sendResponse - Function that can be used to send a
-   *   response back to the sender.
+   * @param {Object} message - Message content.
    */
-  _handleMessage(message, sender, sendResponse) {
-    if (message.action === backgroundActionEnum.SCAN_ALL) {
+  _handleMessage(message) {
+    if (message.action == backgroundActionEnum.SCAN_ALL) {
       this._scanAll();
-    } else if (message.action === backgroundActionEnum.SCAN_ITEM) {
+    } else if (message.action == backgroundActionEnum.SCAN_ITEM) {
       this._scanItem(message.itemId);
-    } else if (message.action === uiActionsEnum.QUEUE_STATE_REQUEST) {
-      this._handleScanQueueStateChange(
-        this.scanQueue.getScanState(),
-        sendResponse,
-      );
     }
   }
 
   /**
    * Refresh the browserAction icon and badge text.
    */
-  _refreshToolbar() {
+  _refreshIcon() {
     const updateCount = this.pageStore.getPageList()
       .filter(isItemChanged).length;
 
-    const queueState = this.scanQueue.getScanState();
-    const isActive = queueState.state === scanQueueStateEnum.ACTIVE;
-
-    this._refreshIcon(isActive ? scanIcon : defaultIcon);
-    this._refreshBadge(updateCount === 0 ? '' : updateCount.toString());
-  }
-
-  /**
-   * Refreshes toolbar icon.
-   *
-   * @param {object} iconPath - Path to icon.
-   * @private
-   */
-  _refreshIcon(iconPath) {
-    browser.browserAction.setIcon({path: iconPath});
-  }
-
-  /**
-   * Refreshes toolbar icon badge text.
-   * Empty string removes the badge.
-   *
-   * @param {string} text - Text.
-   * @private
-   */
-  _refreshBadge(text) {
-    browser.browserAction.setBadgeText({text: text});
+    browser.browserAction.setIcon({path: activeIcon});
+    if (updateCount == 0) {
+      browser.browserAction.setBadgeText({text: ''});
+    } else {
+      browser.browserAction.setBadgeText({text: updateCount.toString()});
+    }
   }
 
   /**
@@ -183,40 +144,15 @@ export class Background {
    * @param {ScanResult} result - Object containing the result of the scan.
    */
   _handleScanComplete({majorChanges, scanCount, isManualScan}) {
-    // Wait for pageStore to be fully updated before triggering the notification
-    window.setTimeout(() => {
-      log(`Scan complete, ${majorChanges} new changes.`);
-      log(`${scanCount} pages scanned.`);
+    log(`Scan complete, ${majorChanges} new changes.`);
+    log(`${scanCount} pages scanned.`);
 
-      // If the user has already viewed some changes, don't include in the count
-      const changeCount = this.pageStore.getChangedPageList().length;
-      const notifyChangeCount = Math.min(majorChanges, changeCount);
+    // If the user has already viewed some changes, don't include in the count
+    const changeCount = this.pageStore.getChangedPageList().length;
+    const notifyChangeCount = Math.min(majorChanges, changeCount);
 
-      if (notifyChangeCount > 0 || isManualScan) {
-        showNotification(notifyChangeCount);
-      }
-    }, 1000);
-  }
-
-  /**
-   * Called whenever scan queue state changes and sends message to other
-   * listeners.
-   *
-   * @param {object} stateData - Scan queue state data.
-   * @param {?Function} sendResponse - Response function.
-   * @private
-   */
-  _handleScanQueueStateChange(stateData, sendResponse) {
-    const message = {
-      action: uiActionsEnum.QUEUE_STATE_CHANGED,
-      data: stateData,
-    };
-    if (sendResponse != null) {
-      sendResponse(message);
-    } else {
-      browser.runtime.sendMessage(message);
+    if (notifyChangeCount > 0 || isManualScan) {
+      showNotification(notifyChangeCount);
     }
-
-    this._refreshToolbar();
   }
 }

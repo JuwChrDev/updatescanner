@@ -22,7 +22,7 @@ export class PageStore {
   }
 
   /**
-   * @returns {object} Enumeration of HTML page types.
+   * @returns {Object} Enumeration of HTML page types.
    */
   static get htmlTypes() {
     return {
@@ -62,9 +62,7 @@ export class PageStore {
         storageInfo.pageFolderIds.push(PageStore.ROOT_ID);
       }
 
-      await storageInfo.save();
       return new PageStore(pageMap, storageInfo);
-
     } catch (error) {
       // Not much we can do with an error. Set to an empty pageMap.
       console.error(error);
@@ -126,7 +124,7 @@ export class PageStore {
    */
   findParent(itemId) {
     return this.getPageFolderList().find(
-      (pageFolder) => pageFolder.children.includes(itemId),
+      (pageFolder) => pageFolder.children.includes(itemId)
     );
   }
 
@@ -138,13 +136,12 @@ export class PageStore {
    * @param {integer} insertAfterIndex - Add the page after this item in the
    * parent folder. If negative, the Page will be added to the end of the parent
    * folder.
-   * @param {object} data - Values to initialise the Page object (optional).
+   * @param {Object} data - Values to initialise the Page object (optional).
    *
    * @returns {Promise} A Promise that fulfils with the new Page object.
    */
   async createPage(parentId, insertAfterIndex, data={}) {
     // Update StorageInfo with the new Page, returning the new Page ID
-    this.storageInfo = await StorageInfo.load();
     const pageId = this.storageInfo.createPage();
     await this.storageInfo.save();
 
@@ -178,7 +175,6 @@ export class PageStore {
    */
   async createPageFolder(parentId, insertAfterIndex) {
     // Update StorageInfo with the new PageFolder, returning the new ID
-    this.storageInfo = await StorageInfo.load();
     const pageFolderId = this.storageInfo.createPageFolder();
     await this.storageInfo.save();
 
@@ -191,12 +187,9 @@ export class PageStore {
     }
     await parent.save();
 
-    // Create the Page and update the PageMap immediately, to allow
-    // children to be safely added straight away.
-    const pageFolder = new PageFolder(pageFolderId, {});
-    await pageFolder.save();
-    this.pageMap.set(pageFolderId, pageFolder);
-    return pageFolder;
+    // Create the Page. This will cause _handleItemUpdate to update the
+    // PageMap.
+    return new PageFolder(pageFolderId, {});
   }
 
   /**
@@ -219,7 +212,6 @@ export class PageStore {
     // Don't delete the root
     if (itemId != PageStore.ROOT_ID) {
       // Remove the page from StorageInfo
-      this.storageInfo = await StorageInfo.load();
       this.storageInfo.deleteItem(itemId);
       await this.storageInfo.save();
 
@@ -285,6 +277,7 @@ export class PageStore {
 
     // Add the item to the new parent in the specified position
     newParent.children.splice(position, 0, itemId);
+    await newParent.save();
 
     // Remove the item from the current parent
     if (currentParent !== undefined) {
@@ -293,15 +286,8 @@ export class PageStore {
         currentPosition++;
       }
       currentParent.children.splice(currentPosition, 1);
-
-      await Promise.all([
-        currentParent.save(),
-        newParent.save(),
-      ]);
-    } else {
-      await newParent.save();
+      await currentParent.save();
     }
-
     // Ensure folder changed states are updated
     this.refreshFolderState();
   }
@@ -319,7 +305,7 @@ export class PageStore {
       let descendantPages = [];
       for (const childId of item.children) {
         descendantPages = descendantPages.concat(
-          this.getDescendantPages(childId),
+          this.getDescendantPages(childId)
         );
       }
       return descendantPages;
@@ -387,7 +373,7 @@ export class PageStore {
       // Page has been deleted
       this.pageMap.delete(itemId);
       // Don't allow Root to be deleted
-      if (itemId === PageStore.ROOT_ID) {
+      if (itemId == PageStore.ROOT_ID) {
         this.pageMap.set(itemId, new PageFolder(itemId, {title: 'root'}));
       }
     } else {

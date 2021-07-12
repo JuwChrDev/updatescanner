@@ -27,12 +27,11 @@ exports.run = function() {
   });
 };
 
-exports.sign = function(addonId, apiKey, apiSecret) {
+exports.sign = function(apiKey, apiSecret) {
   console.log('Running "web-ext sign"...');
   return webExt.cmd.sign({
     sourceDir: 'src',
     artifactsDir: 'dist',
-    id: addonId,
     apiKey: apiKey,
     apiSecret: apiSecret,
     channel: 'unlisted',

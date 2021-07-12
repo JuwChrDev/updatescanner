@@ -2,14 +2,14 @@ const fs = require('fs');
 const UPDATES_FILE = 'updates.json';
 
 /**
- * @returns {object} Contents of the updates file.
+ * @returns {Object} Contents of the updates file.
  */
 function readUpdates() {
   return require(`../../${UPDATES_FILE}`);
 }
 
 /**
- * @param {object} updates - Contents of the updates file.
+ * @param {Object} updates - Contents of the updates file.
  */
 function writeUpdates(updates) {
   fs.writeFileSync(UPDATES_FILE, JSON.stringify(updates, null, 2));
@@ -23,7 +23,7 @@ exports.addVersion = function(newVersion, strictMinVersion, addonId) {
   const newUpdate = {
     version: newVersion,
     update_link: `https://github.com/sneakypete81/updatescanner/releases/download/${newVersion}/update_scanner-${newVersion}-an.fx.xpi`,
-    browser_specific_settings: {gecko: {strict_min_version: strictMinVersion}},
+    applications: {gecko: {strict_min_version: strictMinVersion}},
   };
 
   updates.addons[addonId].updates.unshift(newUpdate);

@@ -2,9 +2,7 @@
 
 Firefox addon to monitors web pages for updates.
 
-**Documentation: http://sneakypete81.github.io/updatescanner**
-
-**Install from: https://addons.mozilla.org/firefox/addon/update-scanner**
+**Documentation Website: http://sneakypete81.github.io/updatescanner**
 
 # Development [![Build Status](https://travis-ci.org/sneakypete81/updatescanner.svg?branch=master)](https://travis-ci.org/sneakypete81/updatescanner)
 

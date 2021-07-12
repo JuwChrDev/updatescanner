@@ -56,14 +56,14 @@ async function restoreBackupFromFile(pageStore, file) {
 /**
  * @param {File} file - File object to read.
  *
- * @returns {object} JSON object read from the file.
+ * @returns {Object} JSON object read from the file.
  */
 async function parseFile(file) {
   return JSON.parse(await readAsText(file));
 }
 
 /**
- * @param {object} json - JSON object to check.
+ * @param {Object} json - JSON object to check.
  *
  * @returns {bool} True if the JSON object is a valid backup, false if it's not,
  * and raises an error if there's a version mismatch.
@@ -83,11 +83,11 @@ function isBackupValid(json) {
  * Recursively import Pages/PageFolders from a JSON object into the PageStore.
  *
  * @param {PageStore} pageStore - PageStore object to import into.
- * @param {object} json - JSON object to import from.
+ * @param {Object} json - JSON object to import from.
  * @param {string} parentId - ID of the parent PageFolder object.
  */
 async function restoreBackupFromJson(
-  pageStore, json, parentId=PageStore.ROOT_ID,
+  pageStore, json, parentId=PageStore.ROOT_ID
 ) {
   for (const child of json.children) {
     if (child.type == 'PageFolder') {

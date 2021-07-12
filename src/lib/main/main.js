@@ -58,7 +58,8 @@ export class Main {
   _handleUrlParams(searchString) {
     const params = new URLSearchParams(searchString);
     switch (this._getUrlParam(params, paramEnum.ACTION)) {
-      case actionEnum.NEW_PAGE: {
+      case actionEnum.NEW_PAGE:
+      {
         this._createNewPage(
           this._getUrlParam(params, paramEnum.TITLE),
           this._getUrlParam(params, paramEnum.URL),
@@ -67,7 +68,8 @@ export class Main {
         );
         break;
       }
-      case actionEnum.NEW_PAGE_FOLDER: {
+      case actionEnum.NEW_PAGE_FOLDER:
+      {
         this._createNewPageFolder(
           this._getUrlParam(params, paramEnum.TITLE),
           this._getUrlParam(params, paramEnum.PARENT_ID),
@@ -75,16 +77,16 @@ export class Main {
         );
         break;
       }
-      case actionEnum.SHOW_DIFF: {
-        this._showDiff(
-          this.pageStore.getItem(this._getUrlParam(params, paramEnum.ID)),
-        );
+      case actionEnum.SHOW_DIFF:
+      {
+        this._showDiff(this.pageStore.getItem(
+          this._getUrlParam(params, paramEnum.ID)));
         break;
       }
-      case actionEnum.SHOW_SETTINGS: {
+      case actionEnum.SHOW_SETTINGS:
+      {
         const item = this.pageStore.getItem(
-          this._getUrlParam(params, paramEnum.ID),
-        );
+          this._getUrlParam(params, paramEnum.ID));
         if (item instanceof Page) {
           this._showPageSettings(item);
         } else {
@@ -94,6 +96,7 @@ export class Main {
       }
     }
   }
+
 
   /**
    * Returns a  value from the URL parameters, or undefined if the specified
@@ -123,12 +126,8 @@ export class Main {
    * parent folder. If negative, the Page will be added to the end of the parent
    * folder.
    */
-  async _createNewPage(
-    title,
-    url = '',
-    parentId = PageStore.ROOT_ID,
-    insertAfterIndex = -1,
-  ) {
+  async _createNewPage(title, url='',
+                       parentId=PageStore.ROOT_ID, insertAfterIndex=-1) {
     if (url.startsWith('about') || url.startsWith('moz-extension')) {
       title = undefined;
       url = undefined;
@@ -137,13 +136,11 @@ export class Main {
     const temporaryPage = new Page(-1, {title: title, url: url});
     const newSettings = await dialog.openPageDialog(temporaryPage);
 
-    if (newSettings == null) {
+    if (newSettings === null) {
       document.location.replace('about:blank');
     } else {
       this.currentPage = await this.pageStore.createPage(
-        parentId,
-        insertAfterIndex,
-      );
+        parentId, insertAfterIndex);
       this._updateCurrentPage(newSettings);
       // @TODO: Scan it immediately
     }
@@ -158,18 +155,14 @@ export class Main {
    * the parent folder. If negative, the PageFolder will be added to the end of
    * the parent folder.
    */
-  async _createNewPageFolder(
-    title,
-    parentId = PageStore.ROOT_ID,
-    insertAfterIndex = -1,
-  ) {
+  async _createNewPageFolder(title,
+                             parentId=PageStore.ROOT_ID,
+                             insertAfterIndex=-1) {
     const temporaryPageFolder = new PageFolder(-1, {title: title});
     const newSettings = await dialog.openPageFolderDialog(temporaryPageFolder);
     if (newSettings !== null) {
-      const pageFolder = await this.pageStore.createPageFolder(
-        parentId,
-        insertAfterIndex,
-      );
+      const pageFolder = await this.pageStore
+        .createPageFolder(parentId, insertAfterIndex);
       pageFolder.title = newSettings.title;
       pageFolder.save();
     }
@@ -193,21 +186,15 @@ export class Main {
   /**
    * Update the current Page with new settings from the Settings dialog.
    *
-   * @param {object} newSettings - Settings to apply to the current page.
+   * @param {Object} newSettings - Settings to apply to the current page.
    */
-  async _updateCurrentPage(newSettings) {
-    this.currentPage = await Page.load(this.currentPage.id);
+  _updateCurrentPage(newSettings) {
     this.currentPage.title = newSettings.title;
     this.currentPage.url = newSettings.url;
     this.currentPage.scanRateMinutes = newSettings.scanRateMinutes;
     this.currentPage.changeThreshold = newSettings.changeThreshold;
     this.currentPage.ignoreNumbers = newSettings.ignoreNumbers;
-    this.currentPage.selectors = newSettings.selectors;
-    this.currentPage.contentMode = newSettings.contentMode;
-    this.currentPage.requireExactMatchCount =
-      newSettings.requireExactMatchCount;
-    this.currentPage.partialScan = newSettings.partialScan;
-    await this.currentPage.save();
+    this.currentPage.save();
 
     document.location.replace(getMainDiffUrl(this.currentPage.id));
   }
@@ -248,22 +235,21 @@ export class Main {
     this.currentPage = page;
     const newSettings = await dialog.openPageDialog(page);
     if (newSettings !== null) {
-      await this._updateCurrentPage(newSettings);
+      this._updateCurrentPage(newSettings);
     }
     document.location.replace(getMainDiffUrl(this.currentPage.id));
   }
 
   /**
-   * Show the PageFolder settings dialog.
+   * Show the PgaeFolder settings dialog.
    *
    * @param {PageFolder} pageFolder - PageFolder to edit.
    */
   async _showPageFolderSettings(pageFolder) {
     const newSettings = await dialog.openPageFolderDialog(pageFolder);
     if (newSettings !== null) {
-      const updatedPageFolder = await PageFolder.load(pageFolder.id);
-      updatedPageFolder.title = newSettings.title;
-      updatedPageFolder.save();
+      pageFolder.title = newSettings.title;
+      pageFolder.save();
     }
     document.location.replace('about:blank');
   }
@@ -275,26 +261,25 @@ export class Main {
     const page = this.currentPage;
 
     switch (this.viewType) {
-      case view.ViewTypes.OLD: {
-        const html = _updateHeader(
-          page,
-          (await loadHtml(page, PageStore.htmlTypes.OLD)) || '',
-        );
+      case view.ViewTypes.OLD:
+      {
+        const html = _updateHeader(page,
+          await loadHtml(page, PageStore.htmlTypes.OLD) || '');
         view.viewOld(page, html);
         break;
       }
 
-      case view.ViewTypes.NEW: {
-        const html = _updateHeader(
-          page,
-          (await loadHtml(page, PageStore.htmlTypes.NEW)) || '',
-        );
+      case view.ViewTypes.NEW:
+      {
+        const html = _updateHeader(page,
+          await loadHtml(page, PageStore.htmlTypes.NEW) || '');
         view.viewNew(page, html);
         break;
       }
 
       case view.ViewTypes.DIFF:
-      default: {
+      default:
+      {
         const html = _updateHeader(page, await loadDiff(page));
         __.viewDiff(page, html);
       }
@@ -328,7 +313,7 @@ async function loadDiff(page) {
 async function loadHtml(page, htmlType) {
   const html = await PageStore.loadHtml(page.id, htmlType);
 
-  if (html == null) {
+  if (html === null) {
     __.log(`Could not load '${page.title}' ${htmlType} HTML from storage`);
   }
   return html;

@@ -1,31 +1,5 @@
 # Update Scanner Changelog
 
-## 4.6.0beta2
-
-* Fix issue that prevented editing of page properties
-
-## 4.6.0beta1
-
-* Add basic support for element selection (#596 thanks to @adadsamcik)
-* Fix race condition when displaying notification after a scan
-
-## 4.5.1alpha3
-
-* Fix for no root folder after fresh installation
-
-## 4.5.1alpha2
-
-* Fix problem when restoring folders (#495)
-
-## 4.5.1alpha1
-
-* Fix potential race conditions in async functions
-
-## 4.5.0beta1
-
-* Add support for Notification Sound extension (#445)
-  * <https://addons.mozilla.org/firefox/addon/notification-sound>
-
 ## 4.4.0
 
 * Open a new tab when a page is clicked in the popup (#286)

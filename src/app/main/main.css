@@ -1,11 +1,27 @@
-html, body, #content {
+html, body,#container,#sidebar ,#content {
   height: 100%;
+  width:100%;
 }
 
 #content {
   overflow-y: hidden;
   display: grid;
   grid-template-rows: auto 1fr;
+  width: auto;
+  height: 100%;
+  box-sizing: border-box;
+  border-left: 1px solid grey;
+}
+#sidebar{
+  float: left;
+  width: 25%;
+  height: 100%;
+  box-sizing: border-box;
+}
+iframe{
+  width: 100%;
+  height:100%;
+  border:none;
 }
 
 #header {
@@ -21,7 +37,7 @@ html, body, #content {
   width: 48px;
   margin-top: 3px;
   margin-right: 15px;
-  background-image: url('/images/updatescanner_48.png');
+/*  background-image: url('/images/updatescanner_48.png');*/
   background-position: center center;
   background-repeat: no-repeat;
 }
@@ -129,7 +145,7 @@ form h1 {
 fieldset {
   border: none;
   margin-left: 0.5em;
-  margin-bottom: 0.5em;
+  margin-bottom: 0,5em;
 }
 
 fieldset div {
@@ -140,14 +156,6 @@ fieldset div {
 .slider {
   padding-left: 0.5em;
   display: flex;
-}
-
-.selectors-description {
-  margin-top: 8px;
-}
-
-#selectors::placeholder {
-  font-size: smaller;
 }
 
 legend {
@@ -162,7 +170,7 @@ label {
 
 label span {
   display: inline-block;
-  min-width: 2.5em;
+  width  : 2.5em;
   text-align: right;
   margin-right: 6px;
 }
@@ -175,10 +183,6 @@ label span {
 
 input {
   flex-grow: 1;
-}
-
-select {
-  width: 100%;
 }
 
 .range-label-min {
@@ -212,8 +216,4 @@ form button.browser-style {
 
 .hidden {
   display: none;
-}
-
-.disabled {
-  opacity: 0.5;
 }

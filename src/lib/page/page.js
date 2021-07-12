@@ -11,7 +11,7 @@ export const __ = {
  */
 export class Page {
   /**
-   * @returns {object} Default values for new Pages.
+   * @returns {Object} Default values for new Pages.
    */
   static get DEFAULTS() {
     return {
@@ -30,15 +30,11 @@ export class Page {
       lastAutoscanTime: null,
       oldScanTime: null,
       newScanTime: null,
-      selectors: null,
-      contentMode: Page.contentModeEnum.TEXT,
-      requireExactMatchCount: false,
-      partialScan: false,
     };
   }
 
   /**
-   * @returns {object} Enumeration of Page change states. Any value other
+   * @returns {Object} Enumeration of Page change states. Any value other
    * than NO_CHANGE or CHANGE indicates an error.
    */
   static get stateEnum() {
@@ -46,18 +42,6 @@ export class Page {
       NO_CHANGE: 'no_change',
       CHANGED: 'changed',
       ERROR: 'error',
-    };
-  }
-
-  /**
-   * @returns {{HTML: string, TEXT: string, IGNORE: string}} Enumeration of
-   *   page content mode.
-   */
-  static get contentModeEnum() {
-    return {
-      IGNORE: 'ignore',
-      HTML: 'html',
-      TEXT: 'text',
     };
   }
 
@@ -72,12 +56,11 @@ export class Page {
   /**
    * @param {string} key - Storage key for the Page object.
    *
-   * @returns {?string} Page ID, or null if the key is not for a Page
-   * object.
+   * @returns {string} Page ID, or null if the key is not for a Page object.
    */
   static idFromKey(key) {
     const matches = key.match('^page:(.*)$');
-    if (matches == null) {
+    if (matches === null) {
       return null;
     } else {
       return matches[1];
@@ -87,7 +70,7 @@ export class Page {
   /**
    * @param {string} key - Storage key.
    *
-   * @returns {boolean} True if the key is for a Page object.
+   * @returns {bool} True if the key is for a Page object.
    */
   static isPageKey(key) {
     return Page.idFromKey(key) !== null;
@@ -95,89 +78,71 @@ export class Page {
 
   /**
    * @param {string} id - ID of the page.
-   * @param {object} data - Serialised Page object from storage.
+   * @param {Object} data - Serialised Page object from storage.
    *
    * @property {string} id - ID of the page.
    * @property {string} title - Title of the page.
    * @property {string} url - URL of the page.
-   * @property {number} scanRateMinutes - Number of minutes between scans. Zero
+   * @property {integer} scanRateMinutes - Number of minutes between scans. Zero
    * means manual scan only.
-   * @property {number} changeThreshold - Number of characters changed before
+   * @property {integer} changeThreshold - Number of characters changed before
    * signalling that a change has occurred.
    * @property {boolean} ignoreNumbers - Don't trigger if only a number has
    * changed.
-   * @property {?string} encoding - Text encoding of the page.
+   * @property {string} encoding - Text encoding of the page.
    * @property {boolean} highlightChanges - Whether to highlight changed text.
    * @property {string} highlightColour - HTML colour string to use for
    * highlighting.
    * @property {boolean} markChanges - Whether to mark changes with << >>.
    * @property {boolean} doPost - Perform a POST request instead of a GET.
    * @property {boolean} postParams - POST parameters to use if doPost is true.
-   * @property {Page.stateEnum} state - Current scan state of the page.
-   * @property {number} lastAutoscanTime - Time that this page was last
+   * @property {stateEnum} state - Current scan state of the page.
+   * @property {integer} lastAutoscanTime - Time that this page was last
    * autoscanned (ms since Unix epoch).
-   * @property {number} oldScanTime - Time when the OLD HTML was last updated
+   * @property {integer} oldScanTime - Time when the OLD HTML was last updated
    * (ms since Unix epoch).
-   * @property {number} newScanTime - Time when the NEW HTML was last updated
+   * @property {integer} newScanTime - Time when the NEW HTML was last updated
    * (ms since Unix epoch).
-   * @property {string} selectors - Selectors separated by comma.
-   * @property {contentModeEnum|string} contentMode - Mode used for content
-   *   comparison.
-   * @property {boolean} requireExactMatchCount - True if part count should
-   *   match.
-   * @property {boolean} partialScan - True if selectors should be used for
-   *   selecting parts of the page to scan.
    */
-  constructor(
-    id,
-    {
-      title = Page.DEFAULTS.title,
-      url = Page.DEFAULTS.url,
-      scanRateMinutes = Page.DEFAULTS.scanRateMinutes,
-      changeThreshold = Page.DEFAULTS.changeThreshold,
-      ignoreNumbers = Page.DEFAULTS.ignoreNumbers,
-      encoding = Page.DEFAULTS.encoding,
-      highlightChanges = Page.DEFAULTS.highlightChanges,
-      highlightColour = Page.DEFAULTS.highlightColour,
-      markChanges = Page.DEFAULTS.markChanges,
-      doPost = Page.DEFAULTS.doPost,
-      postParams = Page.DEFAULTS.postParams,
-      state = Page.DEFAULTS.state,
-      lastAutoscanTime = Page.DEFAULTS.lastAutoscanTime,
-      oldScanTime = Page.DEFAULTS.oldScanTime,
-      newScanTime = Page.DEFAULTS.newScanTime,
-      selectors = Page.DEFAULTS.selectors,
-      contentMode = Page.DEFAULTS.contentMode,
-      requireExactMatchCount = Page.DEFAULTS.requireExactMatchCount,
-      partialScan = Page.DEFAULTS.partialScan,
-    },
-  ) {
+  constructor(id, {
+    title=Page.DEFAULTS.title,
+    url=Page.DEFAULTS.url,
+    scanRateMinutes=Page.DEFAULTS.scanRateMinutes,
+    changeThreshold=Page.DEFAULTS.changeThreshold,
+    ignoreNumbers=Page.DEFAULTS.ignoreNumbers,
+    encoding=Page.DEFAULTS.encoding,
+    highlightChanges=Page.DEFAULTS.highlightChanges,
+    highlightColour=Page.DEFAULTS.highlightColour,
+    markChanges=Page.DEFAULTS.markChanges,
+    doPost=Page.DEFAULTS.doPost,
+    postParams=Page.DEFAULTS.postParams,
+    state=Page.DEFAULTS.state,
+    lastAutoscanTime=Page.DEFAULTS.lastAutoscanTime,
+    oldScanTime=Page.DEFAULTS.oldScanTime,
+    newScanTime=Page.DEFAULTS.newScanTime,
+  }) {
     this.id = id;
     this.title = title;
     this.url = url;
     this.scanRateMinutes = scanRateMinutes;
     this.changeThreshold = changeThreshold;
     this.ignoreNumbers = ignoreNumbers;
-    this.encoding = encoding;
-    this.highlightChanges = highlightChanges;
-    this.highlightColour = highlightColour;
-    this.markChanges = markChanges;
-    this.doPost = doPost;
-    this.postParams = postParams;
+    this.encoding = encoding,
+    this.highlightChanges = highlightChanges,
+    this.highlightColour = highlightColour,
+    this.markChanges = markChanges,
+    this.doPost = doPost,
+    this.postParams = postParams,
     this.state = state;
     this.lastAutoscanTime = lastAutoscanTime;
     this.oldScanTime = oldScanTime;
     this.newScanTime = newScanTime;
-    this.selectors = selectors;
-    this.contentMode = contentMode;
-    this.requireExactMatchCount = requireExactMatchCount;
-    this.partialScan = partialScan;
   }
 
   /**
    * Convert the Page instance to an object suitable for storage.
    *
-   * @returns {object} Object suitable for storage.
+   * @returns {Object} Object suitable for storage.
    */
   _toObject() {
     return {
@@ -196,15 +161,11 @@ export class Page {
       lastAutoscanTime: this.lastAutoscanTime,
       oldScanTime: this.oldScanTime,
       newScanTime: this.newScanTime,
-      selectors: this.selectors,
-      contentMode: this.contentMode,
-      requireExactMatchCount: this.requireExactMatchCount,
-      partialScan: this.partialScan,
     };
   }
 
   /**
-   * @returns {object} Object suitable for backups, excluding current scan
+   * @returns {Object} Object suitable for backups, excluding current scan
    * state.
    */
   backup() {
@@ -221,10 +182,6 @@ export class Page {
       markChanges: this.markChanges,
       doPost: this.doPost,
       postParams: this.postParams,
-      selectors: this.selectors,
-      contentMode: this.contentMode,
-      requireExactMatchCount: this.requireExactMatchCount,
-      partialScan: this.partialScan,
       // state: this.state,
       // lastAutoscanTime: this.lastAutoscanTime,
       // oldScanTime: this.oldScanTime,
@@ -242,7 +199,7 @@ export class Page {
    */
   static async load(id) {
     try {
-      const data = (await Storage.load(Page._KEY(id))) || {};
+      const data = await Storage.load(Page._KEY(id)) || {};
       return new Page(id, data);
     } catch (error) {
       __.log(`ERROR: Page.load: ${error}`);
@@ -260,7 +217,7 @@ export class Page {
   async existsInStorage() {
     try {
       const data = await Storage.load(Page._KEY(this.id));
-      return data !== undefined;
+      return (data !== undefined);
     } catch (error) {
       __.log(`ERROR: Page.existsInStorage: ${error}`);
     }
@@ -285,7 +242,7 @@ export class Page {
   /**
    * Delete the Page from storage.
    *
-   * @returns {Promise} An empty Promise that fulfils when the operation is
+   * @returns {Promise} An empty Promise that fultils when the operation is
    * finished. Errors are logged and ignored.
    */
   async delete() {
@@ -298,16 +255,16 @@ export class Page {
   }
 
   /**
-   * @returns {boolean} True if the Page state is CHANGED.
+   * @returns {bool} True if the Page state is CHANGED.
    */
   isChanged() {
-    return this.state === Page.stateEnum.CHANGED;
+    return this.state == Page.stateEnum.CHANGED;
   }
 
   /**
-   * @returns {boolean} True if the Page state is ERROR.
+   * @returns {bool} True if the Page state is ERROR.
    */
   isError() {
-    return this.state === Page.stateEnum.ERROR;
+    return this.state == Page.stateEnum.ERROR;
   }
 }

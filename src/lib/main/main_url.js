@@ -2,7 +2,6 @@ import {PageStore} from '/lib/page/page_store.js';
 
 /**
  * Parameter names for the Main page URL parameters.
- *
  * @readonly
  * @enum {string}
  */
@@ -17,7 +16,6 @@ export const paramEnum = {
 
 /**
  * Values for the Main page action URL parameter.
- *
  * @readonly
  * @enum {string}
  */
@@ -32,7 +30,7 @@ export const actionEnum = {
 /**
  * Open the Main page URL, passing the specified parameters.
  *
- * @param {object} params - Object containing paramEnum key/values.
+ * @param {Object} params - Object containing paramEnum key/values.
  * @param {boolean} newTab - Open the page in a new tab.
  */
 export function openMain(params, newTab) {
@@ -47,7 +45,7 @@ export function openMain(params, newTab) {
 /**
  * Returns the URL to open the Main page, passing the specified parameters.
  *
- * @param {object} params - Object containing paramEnum key/values.
+ * @param {Object} params - Object containing paramEnum key/values.
  *
  * @returns {string} URL of the Main page.
  */

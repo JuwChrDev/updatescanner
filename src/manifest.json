@@ -1,16 +1,10 @@
 {
   "manifest_version": 2,
-  "name": "Update Scanner",
-  "short_name": "Updatescan",
-  "version": "4.6.0beta2",
-  "description": "Monitors webpages for updates.",
-  "homepage_url": "https://sneakypete81.github.io/updatescanner/",
-  "browser_specific_settings": {
-    "gecko": {
-      "id": "{c07d1a49-9894-49ff-a594-38960ede8fb9}",
-      "strict_min_version": "60.0"
-    }
-  },
+  "name": "Update Scanner for Chrome",
+  "short_name": "ChromeUpdateScan",
+  "version": "4.4.0",
+  "description": "A Chrome port of sneakypete81's Update Scanner for Firefox",
+  "homepage_url": "https://github.com/JuwChrDev/updatescanner",
   "icons": {
     "48": "images/updatescanner_48.png",
     "96": "images/updatescanner_96.png"
@@ -21,9 +15,7 @@
     "notifications",
     "storage",
     "tabs",
-    "unlimitedStorage",
-    "*://twitter.com/*",
-    "*://www.facebook.com/*"
+    "unlimitedStorage"
   ],
   "background": {
     "page": "app/background/background.html"
@@ -32,15 +24,6 @@
     "default_title": "Update Scanner",
     "browser_style": true,
     "default_popup": "app/popup/popup.html",
-    "default_icon": {
-      "18": "images/updatescanner_18.png",
-      "48": "images/updatescanner_48.png",
-      "64": "images/updatescanner_64.png"
-    }
-  },
-  "sidebar_action": {
-    "default_title": "Update Scanner",
-    "default_panel": "app/sidebar/sidebar.html",
     "default_icon": {
       "18": "images/updatescanner_18.png",
       "48": "images/updatescanner_48.png",

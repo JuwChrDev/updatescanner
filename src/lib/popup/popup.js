@@ -7,7 +7,6 @@ import {PageStore, hasPageStateChanged, isItemChanged}
 import {createBackupJson} from '/lib/backup/backup.js';
 import {openRestoreUrl} from '/lib/backup/restore_url.js';
 import {waitForMs} from '/lib/util/promise.js';
-import {uiActionsEnum} from '/lib/background/actions.js';
 
 /**
  * Class representing the Update Scanner toolbar popup.
@@ -41,10 +40,6 @@ export class Popup {
     view.bindHelpClick(this._handleHelpClick.bind(this));
     view.bindPageClick(this._handlePageClick.bind(this));
 
-    browser.runtime.onMessage.addListener(this._handleMessage.bind(this));
-    browser.runtime.sendMessage({action: uiActionsEnum.QUEUE_STATE_REQUEST})
-      .then(this._handleMessage.bind(this));
-
     this._refreshPageList();
   }
 
@@ -76,8 +71,10 @@ export class Popup {
    * Called when the Sidebar button is clicked, to open the sidebar.
    */
   _handleSidebarClick() {
-    browser.sidebarAction.open();
-    window.close();
+    //browser.sidebarAction.open();
+    //window.close();
+    const url = browser.extension.getURL('/app/main/main.html');
+    browser.tabs.create({url: url});
   }
 
   /**
@@ -92,13 +89,22 @@ export class Popup {
    * Called when the Backup menu item is clicked, to backup pages to a file.
    */
   async _handleBackupClick() {
+	window.close();
     const blob = new Blob(
       [createBackupJson(this.pageStore)],
-      {type: 'application/json'},
+      {type: 'application/json'}
     );
     const url = URL.createObjectURL(blob);
-
-    await view.downloadUrl(url, 'Update Scanner Backup.json');
+	var now = new Date();
+	var year = '' + now.getFullYear();
+	var month = '' + (now.getMonth() + 1); if (month.length == 1) { month = '0' + month; }
+	var day = '' + now.getDate(); if (day.length == 1) { day = '0' + day; }
+	var hour = '' + now.getHours(); if (hour.length == 1) { hour = '0' + hour; }
+	var minute = "" + now.getMinutes(); if (minute.length == 1) { minute = '0' + minute; }
+	var second = "" + now.getSeconds(); if (second.length == 1) { second = '0' + second; }
+	var name = 'Backup_' + year + '_' + month + '_' + day + 'T' + hour + '_' + minute + '_' + second;
+	
+    await view.downloadUrl(url, name);
     URL.revokeObjectURL(url);
   }
 
@@ -114,10 +120,8 @@ export class Popup {
    * Called when the Help menu item is clicked, to open the help website.
    */
   _handleHelpClick() {
-    browser.tabs.create({
-      url:
-        'https://sneakypete81.github.io/updatescanner/',
-    });
+    browser.tabs.create({url:
+      'https://sneakypete81.github.io/updatescanner/'});
     window.close();
   }
 
@@ -156,27 +160,5 @@ export class Popup {
     if (hasPageStateChanged(change)) {
       this._refreshPageList();
     }
-  }
-
-  /**
-   * Called when message is sent to the UI.
-   *
-   * @param {object} message - Message content.
-   * @private
-   */
-  _handleMessage(message) {
-    if (message.action === uiActionsEnum.QUEUE_STATE_CHANGED) {
-      this._handleQueueChange(message.data);
-    }
-  }
-
-  /**
-   * Called when scan queue state changes.
-   *
-   * @param {scanQueueStateEnum} queueData - Scan queue state.
-   * @private
-   */
-  _handleQueueChange(queueData) {
-    view.setScanState(queueData);
   }
 }

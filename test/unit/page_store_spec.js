@@ -32,7 +32,6 @@ describe('PageStore', function() {
         spyOnStorageLoadWithArgReturn({
           [StorageInfo._KEY]: Promise.resolve(undefined),
         });
-        spyOn(Storage, 'save').and.returnValues(Promise.resolve());
 
         PageStore.load().then((pageStore) => {
           expect(pageStore.pageMap.get('0')).toEqual(
@@ -41,14 +40,13 @@ describe('PageStore', function() {
           expect(pageStore.storageInfo.pageFolderIds).toEqual(['0']);
           done();
         }).catch((error) => done.fail(error));
-      },
+      }
     );
 
     it('retrieves an empty pageMap from storage', function(done) {
       spyOnStorageLoadWithArgReturn({
         [StorageInfo._KEY]: Promise.resolve({pageIds: [], pageFolderIds: []}),
       });
-      spyOn(Storage, 'save').and.returnValues(Promise.resolve());
 
       PageStore.load().then((pageStore) => {
         expect(pageStore.pageMap.get('0')).toEqual(
@@ -67,7 +65,6 @@ describe('PageStore', function() {
         [Page._KEY('1')]: Promise.resolve({title: 'Page 1'}),
         [Page._KEY('2')]: Promise.resolve({title: 'Page 2'}),
       });
-      spyOn(Storage, 'save').and.returnValues(Promise.resolve());
 
       PageStore.load().then((pageStore) => {
         expect(pageStore.pageMap.get('0')).toEqual(
@@ -93,7 +90,6 @@ describe('PageStore', function() {
           [PageFolder._KEY('3')]: Promise.resolve(
             {title: 'subfolder', children: ['2']}),
         });
-        spyOn(Storage, 'save').and.returnValues(Promise.resolve());
 
         PageStore.load().then((pageStore) => {
           expect(pageStore.pageMap.get('1')).toEqual(
@@ -114,7 +110,6 @@ describe('PageStore', function() {
       spyOnStorageLoadWithArgReturn({
         [StorageInfo._KEY]: Promise.resolve(storageInfo),
       });
-      spyOn(Storage, 'save').and.returnValues(Promise.resolve());
 
       PageStore.load().then((pageStore) => {
         expect(pageStore.storageInfo).toEqual(new StorageInfo(storageInfo));
@@ -264,7 +259,7 @@ describe('PageStore', function() {
         const pageFolderList = pageStore.getPageFolderList();
 
         expect(pageFolderList).toEqual([root]);
-      },
+      }
     );
 
     it('returns an array containing all PageFolders in the map', function() {
@@ -478,18 +473,6 @@ describe('PageStore', function() {
           done();
         }).catch((error) => done.fail(error));
       }).catch((error) => done.fail(error));
-    });
-
-    it('updates the PageMap immediately', async function() {
-      spyOnStorageLoadWithArgReturn({
-        [StorageInfo._KEY]: Promise.resolve(undefined),
-      });
-      spyOn(Storage, 'save').and.returnValues(Promise.resolve());
-
-      const pageStore = await PageStore.load();
-      const pageFolder = await pageStore.createPageFolder(PageStore.ROOT_ID);
-
-      expect(pageStore.pageMap.get('1')).toEqual(pageFolder);
     });
   });
 

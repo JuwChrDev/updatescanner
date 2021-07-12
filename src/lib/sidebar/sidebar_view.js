@@ -7,8 +7,8 @@ import {log} from '/lib/util/log.js';
 import {qs, $on} from '/lib/util/view_helpers.js';
 
 // See https://bugzilla.mozilla.org/show_bug.cgi?id=840640
-import dialogPolyfill
-  from '/dependencies/module/dialog-polyfill/dist/dialog-polyfill.esm.js';
+import dialogPolyfill from
+  '/dependencies/module/dialog-polyfill/dist/dialog-polyfill.esm.js';
 
 /**
  * Class representing the Update Scanner Sidebar.
@@ -73,7 +73,7 @@ export class SidebarView {
 
       // Handle middle-clicks on tree items
       const isJstreeClick = event.target.classList.contains('jstree-anchor');
-      if (isJstreeClick && event.button === 1) {
+      if (isJstreeClick && event.button == 1) {
         const data = {
           selected: [event.target.parentNode.id],
           event: event,
@@ -116,7 +116,7 @@ export class SidebarView {
    * @param {Map} pageMap - Map of Page and PageFolder objects, keyed by ID.
    * @param {Page|PageFolder} root - Node to use as the root of the tree.
    *
-   * @returns {object} Object containing the JSTree data generated from the
+   * @returns {Object} Object containing the JSTree data generated from the
    * pageMap.
    */
   _generateTree(pageMap, root) {
@@ -163,12 +163,12 @@ export class SidebarView {
   }
 
   /**
-   * @param {object} node - JSTree node.
+   * @param {Object} node - JSTree node.
    *
    * @returns {string} ItemId for the specified node.
    */
   _nodeToItemId(node) {
-    if (node.id === '#') {
+    if (node.id == '#') {
       return PageStore.ROOT_ID;
     } else {
       return node.id;
@@ -176,7 +176,7 @@ export class SidebarView {
   }
 
   /**
-   * @returns {object} Object containing sidebar context menu items.
+   * @returns {Object} Object containing sidebar context menu items.
    */
   _getContextMenuItems() {
     return (node) => {
@@ -213,20 +213,20 @@ export class SidebarView {
    * for full details.
    *
    * @param {string} operation - Operation performed on the tree (move_node).
-   * @param {object} node - Node that moved.
-   * @param {object} parent - New parent of the node.
+   * @param {Object} node - Node that moved.
+   * @param {Object} parent - New parent of the node.
    * @param {integer} position - New position within the parent.
-   * @param {object} more - Other data associated with the operation.
+   * @param {Object} more - Other data associated with the operation.
    *
    * @returns {boolean} True if the operation is allowed.
    */
   _onTreeChanged(operation, node, parent, position, more) {
     // Only the move operation is valid
-    if (operation !== 'move_node') {
+    if (operation != 'move_node') {
       return false;
     }
     // Only allow DnD onto a Folder
-    if (parent.id !== '#' && !parent.data.isFolder) {
+    if (parent.id != '#' && !parent.data.isFolder) {
       return false;
     }
     // more.core is true if a drop has occurred
@@ -240,13 +240,13 @@ export class SidebarView {
    * Registers the provided handler function to be called whenever a single
    * item in the sidebar is selected.
    *
-   * @param {object} handler - Callback to use whenever the sidebar selection
+   * @param {Object} handler - Callback to use whenever the sidebar selection
    * changes.
    */
   registerSelectHandler(handler) {
     $(this._sidebarDivSelector).on('changed.jstree', (event, data) => {
       // Ignore if the event was due to a refresh or if nothing is selected.
-      if (!this._refreshing && data.selected.length === 1) {
+      if (!this._refreshing && data.selected.length == 1) {
         const id = data.selected[0];
         // Pass the event that caused the change, not the change event itself
         handler(data.event, id);
@@ -257,7 +257,7 @@ export class SidebarView {
   /**
    * Registers the provided handler function to be called to create a new Page.
    *
-   * @param {Function} handler - Callback to use to create a new Page.
+   * @param {Object} handler - Callback to use to create a new Page.
    */
   registerNewPageHandler(handler) {
     this._newPageHandler = (node) => handler(node.id);
@@ -267,7 +267,7 @@ export class SidebarView {
    * Registers the provided handler function to be called to create a
    * new PageFolder.
    *
-   * @param {Function} handler - Callback to use to create a new PageFolder.
+   * @param {Object} handler - Callback to use to create a new PageFolder.
    */
   registerNewPageFolderHandler(handler) {
     this._newPageFolderHandler = (node) => handler(node.id);
@@ -277,8 +277,7 @@ export class SidebarView {
    * Registers the provided handler function to be called whenever a tree
    * node is to be deleted.
    *
-   * @param {Function} handler - Callback to use whenever a node is to be
-   * deleted.
+   * @param {Object} handler - Callback to use whenever a node is to be deleted.
    */
   registerDeleteHandler(handler) {
     this._deleteHandler = (node) => handler(node.id);
@@ -286,9 +285,9 @@ export class SidebarView {
 
   /**
    * Registers the provided handler function to be called whenever a tree
-   * node is to be moved due to a DnD operation.
+   * node is to be moved due to a DnD operaion.
    *
-   * @param {Function} handler - Callback to use whenever a node is to be moved.
+   * @param {Object} handler - Callback to use whenever a node is to be moved.
    */
   registerMoveHandler(handler) {
     this._moveHandler = (itemId, parentId, position) =>
@@ -299,7 +298,7 @@ export class SidebarView {
    * Registers the provided handler function to be called whenever the
    * 'Scan' context menu item is selected..
    *
-   * @param {Function} handler - Callback to use when 'Scan' is selected.
+   * @param {Object} handler - Callback to use when 'Scan' is selected.
    */
   registerScanItemHandler(handler) {
     this._scanItemHandler = (node) => handler(node.id);
@@ -309,7 +308,7 @@ export class SidebarView {
    * Registers the provided handler function to be called whenever the
    * 'Settings' context menu item is selected..
    *
-   * @param {Function} handler - Callback to use when 'Settings' is selected.
+   * @param {Object} handler - Callback to use when 'Settings' is selected.
    */
   registerSettingsHandler(handler) {
     this._settingsHandler = (node) => handler(node.id);
@@ -337,7 +336,7 @@ export class SidebarView {
 
     return new Promise((resolve, reject) => {
       $on(dialog, 'close', () => {
-        resolve(dialog.returnValue === 'delete');
+        resolve(dialog.returnValue == 'delete');
       });
     });
   }

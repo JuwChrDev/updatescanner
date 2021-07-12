@@ -35,7 +35,7 @@ function initMenu() {
 }
 
 /**
- * @param {object} handlers - Object containing the following keys
+ * @param {Object} handlers - Object containing the following keys
  * settingsHandler - Called when the Page Settings menu item is clicked
  * debugHandler - Called when the Debug Info menu item is clicked.
  */
@@ -85,7 +85,7 @@ export function viewDiff(page, html) {
  */
 export function viewOld(page, html) {
   setTitle(page.title, page.url);
-  if (page.oldScanTime == null) {
+  if (page.oldScanTime === null) {
     setSubtitle('There is no old version of this page available yet.');
   } else {
     const scanTime = timeSince(new Date(page.oldScanTime));

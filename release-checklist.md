@@ -6,9 +6,8 @@
 
 * Update `CHANGELOG.md`
 * Run `npm run bump`
-* Run `npm run all`
 * *BETA ONLY:* Run `npm run sign`
-* Run `git push && git push --tags`
+* Push to Github
 
 * Run `npm run release`
 
@@ -25,19 +24,19 @@ Test using Win10 x64 with the latest (non-Beta) Firefox.
 
 ### Startup
 
-* X Create a fresh profile and install the release candidate.
-* X Check that the sidebar is opened automatically.
-* X Click the website sidebar item, check that it displays.
+* Create a fresh profile and install the release candidate.
+* Check that the sidebar is opened automatically.
+* Click the website sidebar item, check that it displays.
 
 ### Page View
 
-* X Visit <https://time.is> and add it using the popup.
-* X Go to "Page Settings" and set Scan=5min, Threshold=All.
-* X Check that a link works on the change view, then go back.
-* X Click the title, then go back.
+* Visit <https://time.is> and add it using the popup.
+* Go to "Page Settings" and set Scan=5min, Threshold=All.
+* Check that a link works on the change view, then go back.
+* Click the title, then go back.
 * Wait for a change then click the notification.
 * Check the Old/New/Changes dropdown.
-* X Check the Debug Info.
+* Check the Debug Info.
 
 ### Sidebar
 
@@ -53,7 +52,7 @@ Test using Win10 x64 with the latest (non-Beta) Firefox.
 
 ### Popup
 
-* X Close the sidebar, open the popup, and click the sidebar button.
+* Close the sidebar, open the popup, and click the sidebar button.
 * Open the popup and click the TimeIs item.
 * Open the popup and Scan All Pages.
 * Open the popup and Show All Updates.

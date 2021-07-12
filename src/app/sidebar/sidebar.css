@@ -1,3 +1,38 @@
+html, body {
+  height: 100%;
+  width:100%;
+}
+#header {
+  display: grid;
+  grid-template-columns: auto minmax(30em, 1fr) auto;
+  padding: 1em;
+  width: 100%;
+  border-bottom: #d7d7db solid 1px;
+  background-color: #f9f9fa;
+}
+
+#icon {
+  height: 48px;
+  width: 48px;
+  margin-top: 3px;
+  margin-right: 15px;
+  background-image: url('/images/updatescanner_48.png');
+  background-position: center center;
+  background-repeat: no-repeat;
+}
+
+h1 {
+  font-size:x-large;
+  font-weight: normal;
+  color: #4040b0;
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+#sidebar{
+  margin-top: 20px;
+}
+
 #tree {
   font-weight: normal;
 }

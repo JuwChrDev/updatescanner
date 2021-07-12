@@ -9,7 +9,7 @@ try {
 }
 
 exports.get = function(setting, defaultValue) {
-  if (Object.prototype.hasOwnProperty.call(buildSettings, setting)) {
+  if (buildSettings.hasOwnProperty(setting)) {
     return buildSettings[setting];
   } else if (defaultValue !== undefined) {
     return defaultValue;
